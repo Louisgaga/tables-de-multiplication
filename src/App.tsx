@@ -5,6 +5,7 @@ import CountDownScreen from "./components/CountDownScreen";
 import PlayGame from "./components/PlayGame";
 import GameResults from "./components/GameResults";
 import ProfilePicker from "./components/ProfilePicker";
+import About from "./components/About";
 import { Modal, ProfileForm, WipeProfileConfirm } from "./components/ProfileForm";
 // Rapport et records : chargés à part, seulement quand on en a besoin.
 const loadReport = () => import("./components/Report");
@@ -71,6 +72,8 @@ export default function App() {
   const [profiles, setProfiles] = useState<Profile[] | null>(null);
   const [profileId, setProfileId] = useState<string | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
+  /** Page « À propos », ouverte depuis « Qui joue ? ». */
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [profileDialog, setProfileDialog] = useState<
     | { kind: "add" }
     | { kind: "edit"; profile: Profile }
@@ -103,7 +106,7 @@ export default function App() {
   // Chaque écran s'ouvre par le haut (des résultats vers le rapport, par exemple).
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [currentScreen]);
+  }, [currentScreen, aboutOpen]);
 
   // L'historique est chargé une fois par joueur : à l'ouverture, puis à chaque
   // connexion ou déconnexion. Les parties suivantes sont ajoutées en mémoire.
@@ -384,6 +387,7 @@ export default function App() {
           onReset={(profile) => setProfileDialog({ kind: "reset", profile })}
           onDelete={(profile) => setProfileDialog({ kind: "delete", profile })}
           onSwitchAccount={handleSignIn}
+          onAbout={() => setAboutOpen(true)}
         />
       );
     }
@@ -490,7 +494,9 @@ export default function App() {
       {/* Primary Transition Stage */}
       <main className="w-full flex-grow flex items-center justify-center">
         <div className="w-full max-w-3xl wide:max-w-6xl relative">
-          {profileGate ?? (
+          {aboutOpen ? (
+            <About onBack={() => setAboutOpen(false)} />
+          ) : profileGate ?? (
             <AnimatePresence mode="wait">
               {currentScreen === "CONFIG" && (
                 <motion.div

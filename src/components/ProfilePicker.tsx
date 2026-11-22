@@ -21,6 +21,7 @@ interface ProfilePickerProps {
   onReset: (profile: Profile) => void;
   onDelete: (profile: Profile) => void;
   onSwitchAccount: () => void;
+  onAbout: () => void;
 }
 
 /**
@@ -42,6 +43,7 @@ export default function ProfilePicker({
   onReset,
   onDelete,
   onSwitchAccount,
+  onAbout,
 }: ProfilePickerProps) {
   const [managing, setManaging] = useState(false);
   const canAdd = profiles.length < MAX_PROFILES;
@@ -204,6 +206,17 @@ export default function ProfilePicker({
           </button>
         </p>
       </div>
+
+      <p className="mt-2 text-center">
+        <button
+          type="button"
+          onClick={onAbout}
+          className="h-11 px-2 bg-none underline underline-offset-2 text-info-ink text-sm font-black cursor-pointer"
+          id="open-about"
+        >
+          À propos de l’app
+        </button>
+      </p>
     </div>
   );
 }
