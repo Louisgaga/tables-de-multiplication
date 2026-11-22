@@ -11,8 +11,7 @@ partagé, et utilisable aussi sur téléphone et sur ordinateur.
 
 En ligne : https://mes-tables-de-multiplication.web.app
 
-Le code est sous licence MIT (voir `LICENSE`), sauf la police Chillax, qui n'est pas dans le dépôt
-(voir plus bas).
+Le code est sous licence MIT (voir `LICENSE`). La police Chillax n'est pas dans le dépôt (voir « Licence »).
 
 ## Lancer l'app sur son ordinateur
 
@@ -51,8 +50,8 @@ parties. L'offre gratuite de Firebase suffit pour quelques familles.
    Google Cloud (voir « Connexion Google » plus bas).
 7. Conseillé : dans la console Google Cloud, limitez la clé d'API Web aux adresses de votre site.
 
-La configuration Web de Firebase n'est pas un secret : elle est lisible dans le site publié. Ce sont les règles
-de sécurité (`firestore.rules`) qui protègent les données.
+N'importe qui peut lire la configuration Web de Firebase dans le site publié. Les données sont protégées par les
+règles de sécurité (`firestore.rules`).
 
 ## Vérifier avant de publier
 
@@ -83,7 +82,7 @@ npx firebase-tools deploy --only firestore:rules   # règles de sécurité, si e
 npx firebase-tools deploy --only hosting
 ```
 
-La branche `main` reflète ce qui est en ligne sur https://mes-tables-de-multiplication.web.app. Chaque évolution passe
+La branche `main` correspond à ce qui est en ligne sur https://mes-tables-de-multiplication.web.app. Chaque évolution passe
 par une branche et une pull request.
 
 ## Organisation du code
@@ -114,13 +113,13 @@ ajuster la hauteur fixe utilisée dans ce calcul.
 ## Design
 
 L'app suit le thème Hum (du papier découpé à la main) : papier crème à grain, feuilles au bord déchiré, boutons en carton
-qui s'enfoncent, police Chillax servie par l'app (`public/fonts/chillax`, à installer soi-même). Le système est décrit dans `design.md`, à lire
-avant de toucher à un écran. En bref :
+qui s'enfoncent, police Chillax servie par l'app (`public/fonts/chillax`, à installer soi-même). Le système est décrit dans `design.md` :
+lisez-le avant de toucher à un écran. Les règles principales :
 
 - les couleurs, les rayons et les ombres sont des jetons de `src/index.css` (`@theme`), jamais une couleur en dur ;
 - les boutons utilisent les classes `btn`, `btn-primary` (poire, une seule action principale par écran), `btn-chosen`
   (choix en cours, à l'encre), `btn-ink` et `btn-danger` ;
-- aucun emoji : le texte, le papier et les chiffres portent l'écran. La mascotte est le seul personnage dessiné ;
+- aucun emoji, et la mascotte est le seul personnage dessiné ;
 - chaque couleur a un rôle : poire pour l'action, encre pour le choix en cours, menthe pour la réussite, corail pour
   l'erreur, bleu pour les liens et le focus.
 
@@ -128,10 +127,10 @@ Règle de contraste (WCAG AA) : sur poire, menthe, corail et kraft, le texte est
 va que sur l'encre et sur `danger`. Pour un texte « juste » ou « faux » sur fond clair, utiliser `success-ink` et
 `error-ink`.
 
-## Règles du jeu à connaître
+## Règles du jeu et détails à connaître
 
 - Un calcul est **maîtrisé** quand ses 3 dernières réponses sont justes et rapides (10 secondes en moyenne au plus). 7 × 8 et 8 × 7 sont deux calculs différents : 100 calculs en tout.
-- **Table** : table × m compte quand il est maîtrisé dans les deux sens (7 × 8 et 8 × 7). Médaille de bronze à 5 sur 10, argent à 8, or à 10 : la table n'est complète que si tous ses calculs sont maîtrisés dans les deux sens.
+- **Médailles** : dans la table de 7, le calcul 7 × 8 compte quand il est maîtrisé dans les deux sens (7 × 8 et 8 × 7). Bronze à 5 calculs sur 10, argent à 8, or à 10 : une table d'or est entièrement maîtrisée, dans les deux sens.
 - **Accueil en deux questions** : quels calculs (Mes points faibles, ou Mes tables choisies à la main) et comment jouer (Entraînement ou Évaluation), puis 10, 20 ou 30 calculs.
 - **Mes points faibles** (`buildFocusSession`) : l'app choisit dans toutes les tables. 60 % de calculs à travailler (ratés la dernière fois d'abord, puis « on travaille », puis en bonne voie), 20 % de nouveaux (tables 1, 2, 5, 10, puis 3, 4, 9, puis 6, 7, 8), 20 % de révisions de calculs maîtrisés (les moins revus d'abord), posées à trous. Si une catégorie manque, les autres complètent.
 - **Session rapide** : raccourci « points faibles + Entraînement + 20 calculs ».
@@ -161,11 +160,11 @@ Un compte Google est une famille : un parent se connecte, puis chaque enfant cho
 
 Celles enregistrées avant l'arrivée des profils n'en ont pas : elles appartiennent au profil marqué `legacy`, le premier créé sur le compte. Au premier passage, l'app demande à quel enfant elles reviennent. Rien n'est réécrit en ligne.
 
-Dans « Gérer les profils », on peut aussi remettre un enfant à zéro (ses parties et réponses sont effacées, son profil reste) ou supprimer son profil. Dans les deux cas, il faut écrire son prénom pour confirmer. Ce sont les seuls boutons d'effacement pour un compte : le rapport et les records n'en ont plus. Sans compte, le rapport garde un bouton « Réinitialiser » qui efface tout ce que l'invité a joué sur l'appareil.
+Dans « Gérer les profils », on peut aussi remettre un enfant à zéro (ses parties et réponses sont effacées, son profil reste) ou supprimer son profil. Dans les deux cas, il faut écrire son prénom pour confirmer. Ce sont les seuls boutons d'effacement pour un compte : le rapport et les records n'en ont pas. Sans compte, le rapport garde un bouton « Réinitialiser » qui efface tout ce que l'invité a joué sur l'appareil.
 
 ### Règles de sécurité
 
-Elles sont dans `firestore.rules` : chaque compte ne lit et ne supprime que ses propres documents, parties et réponses ne se modifient jamais, et chaque champ est contrôlé. Seuls le prénom et l'animal d'un profil peuvent changer. Tout changement de la forme des documents doit donc être accompagné d'un changement de ces règles et de `tests/firestore.rules.test.ts`.
+Elles sont dans `firestore.rules` : chaque compte ne lit et ne supprime que ses propres documents, parties et réponses ne se modifient jamais, et chaque champ est contrôlé. Seuls le prénom et la pastille (`avatar`) d'un profil peuvent changer. Si vous changez la forme d'un document, modifiez aussi ces règles et `tests/firestore.rules.test.ts`.
 
 ### Dans le navigateur
 

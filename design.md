@@ -1,10 +1,10 @@
 # Design : Mes tables de Multiplication
 
-Le système verrouillé. Tous les écrans le partagent. On le change exprès, ici d'abord.
+Les règles visuelles communes à tous les écrans. Pour en changer une, modifiez d'abord ce fichier, puis les écrans.
 
 ## Système
 - Genre : playful. Écrans d'application (pas de page vitrine).
-- Thème : Hum (Hallmark), à la demande. Du papier découpé à la main : papier crème à grain, feuilles au bord déchiré, carton qu'on enfonce, lumière venue d'en haut à gauche.
+- Thème : Hum, de Hallmark (https://github.com/nutlope/hallmark). Du papier découpé à la main : papier crème à grain, feuilles au bord déchiré, carton qu'on enfonce, lumière venue d'en haut à gauche.
 - Axes : light/rounded-sans/chromatic-yellow · posture : full-palette.
 - Public : des enfants de 7 à 10 ans sur un iPad partagé, et leurs parents pour le rapport.
 
@@ -47,7 +47,7 @@ Rayons : feuilles `rounded-[28px]`, carton `rounded-2xl` (16 px), champs 14 px. 
 - `<Avatar avatar name size>` : pastille de profil, un papier de couleur et l'initiale de l'enfant. `AVATAR_TONES` et `avatarTone()` donnent la couleur de chaque valeur de `AVATARS`.
 
 ## Règles
-- Aucun emoji, nulle part. Le texte, le papier et les chiffres portent l'écran. Les icônes `lucide-react` ne servent qu'aux contrôles sans texte (son, effacer, retour, fermer).
+- Aucun emoji, nulle part. Les icônes `lucide-react` ne servent qu'aux contrôles sans texte (son, effacer, retour, fermer).
 - La mascotte (`Mascot.tsx`) reste, seul personnage dessiné.
 - Pas de carte dans une carte : les sections sont des feuilles posées côte à côte sur le papier, ou séparées par un trait dans une même feuille.
 - Les chiffres du produit en grand (Chillax 600, `tabular-nums`), leur unité dessous en 500. Des tableaux avant des cartes pour les listes.
