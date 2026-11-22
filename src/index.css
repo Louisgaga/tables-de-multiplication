@@ -1,0 +1,436 @@
+/* Hallmark · shape: app screen · genre: playful · theme: Hum (by request) · redesign: full
+ * nav: kept (en-tête de l'app : le nom, le joueur, le compte) · signature: le calcul en tuiles de carton sur sa bande de papier déchirée · states: chargement, vide, erreur hors ligne, plein
+ * axes: light/rounded-sans/chromatic-yellow · posture: full-palette · contrast: pass · v2.0.0 */
+/* Hallmark · pre-emit critique: P4 H4 E4 S4 R4 V4 · weakest: R, les écrans de rapport restent denses ; un tableau par section et des feuilles séparées au lieu de cartes dans une carte */
+/* Hallmark · waive 23 · posture: full-palette, le bouton principal et un seul champ poire par écran · la session rapide est le champ poire de Hum, « C'est parti ! » son bouton principal : les deux actions de l'accueil */
+/* Hallmark · waive 39b · session rapide, tuiles des tables et pavé de 56 à 94px ; sur téléphone, cases de la grille « Où en es-tu ? » à 31px · les enfants tapent avec tout le doigt sur un iPad partagé : les contrôles du jeu restent grands ; la grille du rapport garde ses 100 cases visibles d'un coup sur téléphone */
+/* Hallmark · finish-review: subagent · 8 findings · 8 resolved (messages du jeu à 120 ms, premier point de chaque mode sur son bouton, médailles à même le kraft, bord de la case vide, grille notée en dérogation, « 90 % », bouton Entraînement à 320px, feuilles du rapport) · gap: écrans de profil relus sur le code */
+/* Hallmark · dismissed 49 · « Changer de joueur » porte whitespace-nowrap sur la ligne de la classe, la lecture statique ne voit que la balise */
+/* Hallmark · waive 80 · la mascotte, 64 à 120px, à côté du calcul · gardée à la demande du propriétaire : un personnage que les enfants connaissent, qui réagit à chaque réponse */
+@import "tailwindcss";
+
+/* Grand écran à l'horizontale (iPad en paysage, ordinateur) : mise en page sur deux colonnes. */
+@custom-variant wide (@media (orientation: landscape) and (min-width: 1000px));
+
+@theme {
+  /* Hum : Chillax partout, deux graisses (500 et 600). Les graisses de Tailwind s'y ramènent. */
+  --font-sans: "Chillax", ui-rounded, ui-sans-serif, system-ui, sans-serif;
+  --font-weight-normal: 500;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 500;
+  --font-weight-bold: 500;
+  --font-weight-extrabold: 600;
+  --font-weight-black: 600;
+  --tracking-display: -0.03em;
+
+  /* Hum : surfaces arrondies, carton à 16 px, ombre de carte douce venue d'en haut à gauche. */
+  --radius-xl: 1rem;
+  --shadow-cut: 1px 2px 0 0 oklch(20% 0.014 255 / 0.22);
+  --shadow-coin: 1px 2px 0 0 oklch(20% 0.014 255 / 0.25), inset 0 0 0 2px oklch(20% 0.014 255 / 0.16);
+  --radius-card: 28px;
+  --radius-stock: 16px;
+  --radius-input: 14px;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-snap: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-xl: 0 1px 2px oklch(20% 0.014 255 / 0.06), 0 12px 28px -14px oklch(20% 0.014 255 / 0.22);
+  --shadow-2xl: 0 1px 2px oklch(20% 0.014 255 / 0.08), 0 18px 40px -16px oklch(20% 0.014 255 / 0.3);
+
+  /*
+   * Couleurs (thème Hum). Chaque couleur a un rôle : poire pour l'action principale et la séance
+   * du jour, encre pour les choix en cours (« primary »), bleu pour les liens et le focus, corail
+   * pour la marque et les erreurs, menthe pour la réussite. Le texte blanc ne va que sur l'encre,
+   * la menthe foncée et le rouge (6:1 et plus) ; sur poire, menthe et corail, le texte est à l'encre.
+   */
+  --color-ink: oklch(20% 0.014 255);
+  --color-ink-2: oklch(29% 0.014 255);
+  --color-muted: oklch(47% 0.014 255);
+  --color-white: oklch(98.8% 0.007 95);
+  --color-paper: oklch(97% 0.012 95);
+  --color-paper-2: oklch(94.5% 0.018 95);
+  --color-paper-3: oklch(91% 0.022 95);
+  --color-card: oklch(98.8% 0.007 95);
+
+  /* Les papiers de Hum : bord du carton, cœur pâle des déchirures, kraft, sable, papier sucre. */
+  --color-edge: oklch(83% 0.04 88);
+  --color-fringe: oklch(99.2% 0.006 95);
+  --color-kraft: oklch(63% 0.085 62);
+  --color-strip: oklch(89% 0.045 78);
+  --color-sand: oklch(77% 0.1 76);
+  --color-sugar: oklch(89% 0.035 236);
+  --color-leaf: oklch(64% 0.15 150);
+  /* La mascotte : son bleu de toujours, accordé au bleu de Hum. */
+  --color-mascot: oklch(50% 0.17 250);
+  --color-mascot-soft: oklch(72% 0.11 250);
+  /* Médailles : des pastilles de papier. Bronze = kraft, argent = gris bleuté, or = poire. */
+  --color-bronze: oklch(66% 0.1 58);
+  --color-silver: oklch(86% 0.014 250);
+  --color-gold: oklch(87% 0.175 96);
+
+  /* Action principale : poire, texte à l'encre (12,2:1), bord dessous plus foncé. */
+  --color-accent: oklch(87% 0.175 96);
+  --color-accent-deep: oklch(72% 0.16 92);
+  --color-accent-ink: oklch(20% 0.014 255);
+  --color-focus: oklch(50% 0.17 250);
+
+  /* Choix en cours et boutons secondaires pleins : l'encre, texte papier. */
+  --color-primary: oklch(20% 0.014 255);
+  --color-primary-dark: oklch(10% 0.01 255);
+
+  /* Réussite : menthe (fonds, bords), menthe foncée (texte et aplats sous texte blanc). */
+  --color-success: oklch(82% 0.15 152);
+  --color-success-soft: oklch(94% 0.05 152);
+  --color-success-wash: oklch(96.5% 0.03 152);
+  --color-success-ink: oklch(48% 0.12 155);
+
+  /* Erreur : corail (fonds, bords), rouge pour le texte ; rouge plein sous texte blanc pour effacer et « Examen ». */
+  --color-error: oklch(70% 0.2 22);
+  --color-error-soft: oklch(93% 0.05 22);
+  --color-error-wash: oklch(96.5% 0.03 22);
+  --color-error-ink: oklch(52% 0.19 27);
+  --color-danger: oklch(52% 0.19 27);
+  --color-danger-dark: oklch(40% 0.15 27);
+
+  /* « On travaille » : ambre, entre la menthe et le corail dans la grille du rapport. */
+  --color-warn: oklch(76% 0.17 70);
+
+  /* Papier, traits et fonds des contrôles. */
+  --color-line: oklch(87% 0.016 95);
+  --color-line-strong: oklch(83% 0.04 88);
+  --color-well: oklch(94.5% 0.018 95);
+  --color-well-strong: oklch(89% 0.022 95);
+  --color-grid: oklch(87% 0.016 95);
+  /* Interrupteur éteint : 4,1:1 sur la carte. */
+  --color-control-off: oklch(58% 0.014 255);
+
+  /* Poire pâle : bouton principal inactif, fonds doux. */
+  --color-sun: oklch(93% 0.09 96);
+  --color-sun-soft: oklch(96.5% 0.045 96);
+
+  /* Le corail de Hum, pour la bouche et les joues de la mascotte. */
+  --color-brand: oklch(70% 0.2 22);
+
+  /* Le bleu de Hum pour les liens ; le corail pâle pour une pastille de profil. */
+  --color-info-soft: oklch(93% 0.04 250);
+  --color-info-ink: oklch(50% 0.17 250);
+  --color-coral: oklch(86% 0.09 30);
+
+  /* Plus petite taille de texte de l'app : 13 px, lisible sur iPad à bout de bras. */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.15rem;
+
+  --animate-shake: shake 0.5s ease-in-out;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-pulse-slow: pulse 2s ease-in-out infinite;
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-6px); }
+    20%, 40%, 60%, 80% { transform: translateX(6px); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+  }
+}
+
+/* Téléphone : les touches du pavé prennent la hauteur laissée libre par le reste de l'écran
+   de jeu (29,5 rem mesurés, plus les marges de sécurité de l'écran), entre 44 et 72 px. */
+@media (max-width: 639px) {
+  :root {
+    /* Place réservée à la correction sous le calcul (PlayGame) : deux lignes, car avec Chillax
+       « La réponse n'est pas 111, mais : 10 × 10 = 100 » ne tient pas sur une. */
+    --fix-h: 106px;
+    --key-h: clamp(
+      2.75rem,
+      calc((100dvh - 29.625rem - max(0.5rem, env(safe-area-inset-top)) - max(0.5rem, env(safe-area-inset-bottom))) / 4),
+      4.5rem
+    );
+  }
+}
+
+/* Téléphone à l'horizontale : très peu de hauteur (jamais un iPad, toujours plus haut que 700 px).
+   Le jeu passe sur deux colonnes, le pavé occupe toute la hauteur à droite : ses touches prennent
+   la hauteur laissée par le bouton Valider et les marges du pavé (7 rem), entre 40 et 64 px. */
+@custom-variant phone-land (@media (orientation: landscape) and (max-height: 500px));
+@media (orientation: landscape) and (max-height: 500px) {
+  :root {
+    --key-h: clamp(
+      2.5rem,
+      calc((100dvh - 7.25rem - max(0.5rem, env(safe-area-inset-top)) - max(0.5rem, env(safe-area-inset-bottom))) / 4),
+      4rem
+    );
+  }
+}
+
+/* Téléphone très court (iPhone SE dans Safari) : sans la mascotte du jeu, le pavé garde des
+   touches de 44 px (26 rem = le reste de l'écran de jeu dans cette version). */
+@custom-variant short (@media (max-width: 639px) and (max-height: 660px));
+@media (max-width: 639px) and (max-height: 660px) {
+  :root {
+    --key-h: clamp(
+      2.75rem,
+      calc((100dvh - 26.125rem - max(0.5rem, env(safe-area-inset-top)) - max(0.5rem, env(safe-area-inset-bottom))) / 4),
+      4.5rem
+    );
+  }
+}
+
+/* Chillax (Indian Type Foundry, licence ITF Free Font) : chaque site l'héberge lui-même, mais sa licence
+   interdit de la redistribuer. Ses fichiers ne sont donc pas dans le dépôt : voir public/fonts/chillax/LISEZMOI.md.
+   Sans eux, l'app prend la police arrondie du système. */
+@font-face {
+  font-family: "Chillax";
+  src: url("/fonts/chillax/chillax-500.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Chillax";
+  src: url("/fonts/chillax/chillax-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Le grain du papier de Hum : un bruit fin généré, jamais une image. */
+:root {
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.25 0 0 0 0 0.22 0 0 0 0 0.12 0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  --fibre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.35' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.27 0 0 0 0 0.15 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+}
+
+:root {
+  /* La lumière vient d'en haut à gauche : l'ombre d'une feuille découpée tombe en bas à droite. */
+  --shadow-paper: drop-shadow(0 0 0.6px oklch(20% 0.014 255 / 0.32)) drop-shadow(1.5px 2.5px 1.5px oklch(20% 0.014 255 / 0.1)) drop-shadow(5px 10px 12px oklch(20% 0.014 255 / 0.11));
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+}
+
+/* Carton de Hum : grain et fibre sous les cartes (classe stock). Les boutons `btn` l'ont déjà. */
+@utility stock {
+  background-image: var(--grain), var(--fibre);
+}
+
+/*
+ * Bouton en carton : un reflet en haut, un bord plein de 5 px dessous. Au survol (souris), le
+ * bord monte à 7 px ; à l'appui, le carton s'enfonce et le bord tombe à 1 px. Le bord est une
+ * ombre : la marge du bas lui garde sa place.
+ */
+@utility btn {
+  --edge: 5px;
+  --edge-c: var(--color-edge);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 5px;
+  border-radius: var(--radius-stock);
+  background-color: var(--btn-bg, var(--color-card));
+  background-image: var(--grain), var(--fibre);
+  color: var(--color-ink);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow:
+    inset 0 0 0 1px var(--color-line),
+    inset 0 2px 0 0 oklch(100% 0 0 / 0.6),
+    0 var(--edge) 0 0 var(--edge-c);
+  transition:
+    translate var(--dur-micro) var(--ease-snap),
+    box-shadow var(--dur-micro) var(--ease-snap),
+    background-color var(--dur-micro) var(--ease-snap);
+  &:active:not(:disabled) {
+    --edge: 1px;
+    translate: 0 4px;
+  }
+  @media (hover: hover) {
+    &:hover:not(:disabled):not(:active) {
+      --edge: 7px;
+      translate: 0 -2px;
+    }
+  }
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--color-muted);
+    background-color: var(--color-paper-2);
+    --edge: 2px;
+    translate: 0 3px;
+  }
+}
+
+/* Action principale : poire, texte à l'encre. Le seul contrôle qui rebondit. */
+@utility btn-primary {
+  --edge-c: var(--color-accent-deep);
+  background-color: var(--color-accent);
+  color: var(--color-accent-ink);
+  box-shadow:
+    inset 0 2px 0 0 oklch(100% 0 0 / 0.45),
+    0 var(--edge) 0 0 var(--edge-c),
+    2px calc(var(--edge) + 4px) 10px -3px color-mix(in oklab, var(--color-ink) 32%, transparent);
+  transition-timing-function: var(--ease-spring);
+  &:disabled {
+    background-color: var(--color-sun);
+    color: var(--color-muted);
+  }
+}
+
+/* Choix en cours : le carton reste enfoncé, à l'encre, texte papier. */
+@utility btn-chosen {
+  --edge: 2px;
+  --edge-c: var(--color-primary-dark);
+  translate: 0 3px;
+  background-color: var(--color-ink);
+  color: var(--color-paper);
+  box-shadow: 0 var(--edge) 0 0 var(--edge-c);
+  @media (hover: hover) {
+    &:hover:not(:disabled):not(:active) {
+      --edge: 2px;
+      translate: 0 3px;
+    }
+  }
+  &:disabled {
+    background-color: var(--color-ink-2);
+    color: var(--color-paper);
+    opacity: 0.6;
+  }
+}
+
+/* Action à l'encre (« Calcul suivant ») : même carton, texte papier, pas enfoncé. */
+@utility btn-ink {
+  --edge-c: var(--color-primary-dark);
+  background-color: var(--color-ink-2);
+  color: var(--color-paper);
+  box-shadow:
+    inset 0 2px 0 0 oklch(100% 0 0 / 0.14),
+    0 var(--edge) 0 0 var(--edge-c);
+}
+
+/* Action qui efface : rouge plein, texte blanc. */
+@utility btn-danger {
+  --edge-c: var(--color-danger-dark);
+  background-color: var(--color-danger);
+  color: var(--color-white);
+  box-shadow:
+    inset 0 2px 0 0 oklch(100% 0 0 / 0.25),
+    0 var(--edge) 0 0 var(--edge-c);
+}
+
+/* Champ de saisie : 52 px, bord fin, anneau de focus bleu. */
+@utility field {
+  height: 52px;
+  width: 100%;
+  padding-inline: 1rem;
+  border-radius: var(--radius-input);
+  border: 1px solid var(--color-muted);
+  background-color: var(--color-card);
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+/* Surligneur poire derrière les mots qui comptent (jamais dans un titre). */
+@utility hl {
+  padding: 0.05em 0.3em;
+  border-radius: 0.3em;
+  background-color: color-mix(in oklab, var(--color-accent) 55%, transparent);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Autocollant découpé : liseré blanc, ombre courte, posé un peu de travers. */
+@utility sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  border: 3px solid var(--color-fringe);
+  box-shadow: var(--shadow-cut);
+  font-size: var(--text-xs);
+  line-height: 1.15rem;
+  font-weight: 600;
+  white-space: nowrap;
+  rotate: -3deg;
+}
+
+/* Feuille de papier posée à plat, sans déchirure (cartes, fenêtres) : carton, coins de 28 px. */
+@utility sheet {
+  border-radius: var(--radius-card);
+  background-color: var(--color-card);
+  background-image: var(--grain), var(--fibre);
+  box-shadow: var(--shadow-xl);
+}
+
+@layer base {
+  html,
+  body {
+    overflow-x: clip;
+  }
+  html {
+    scrollbar-color: var(--color-muted) var(--color-paper);
+  }
+  body {
+    font-weight: 500;
+    caret-color: var(--color-focus);
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-accent) 45%, transparent);
+    color: var(--color-ink);
+  }
+  /* Un contrôle inactif ne se laisse pas attraper. */
+  :disabled {
+    cursor: not-allowed;
+  }
+  /* Le focus est bleu, net et instantané. */
+  :focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: var(--tracking-display);
+    font-synthesis: none;
+    text-wrap: balance;
+  }
+}
+
+/* Réglages pour le tactile */
+html {
+  /* Pas de zoom par double appui (taper « 44 » vite ne doit pas zoomer). Le pincement est bloqué
+     dans main.tsx, et la page ne rebondit plus quand on la tire au-delà de ses bords. */
+  touch-action: manipulation;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  background-color: var(--color-paper);
+}
+
+body {
+  background-color: var(--color-paper);
+  background-image: var(--grain), var(--fibre);
+  /* Pas de sélection de texte ni de menu « Copier » sur un appui long. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+/* Les champs de saisie restent sélectionnables : sinon, sur iPad et iPhone, on ne peut pas y écrire. */
+input,
+textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Réglage « Réduire les animations » de l'appareil : pas de rebond, de tremblement ni de pulsation.
+   Seuls les indicateurs de chargement continuent de tourner. */
+@media (prefers-reduced-motion: reduce) {
+  *:not(.animate-spin),
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,16 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+.firebase/
+
+# Configuration Firebase du projet : chaque installation a la sienne (modèle : firebase-applet-config.example.json).
+firebase-applet-config.json
+
+# Police Chillax : sa licence interdit de la redistribuer (voir public/fonts/chillax/LISEZMOI.md).
+public/fonts/chillax/*.woff2

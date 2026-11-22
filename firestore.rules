@@ -1,0 +1,138 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Nombre de champs d'une partie ou d'une réponse : celui d'origine, ou un de plus avec
+    // le profil de l'enfant (profileId). Les documents sans profil appartiennent au profil
+    // « legacy » du compte (les parties jouées avant l'arrivée des profils).
+    function hasFieldCount(data, base) {
+      return data.keys().size() == base ||
+        (data.keys().size() == base + 1 && data.keys().hasAll(['profileId']) && isValidId(data.profileId));
+    }
+
+    function isValidProfileName(name) {
+      return name is string && name.size() >= 1 && name.size() <= 20;
+    }
+
+    function isValidAvatar(avatar) {
+      return avatar is string && avatar.size() >= 1 && avatar.size() <= 16;
+    }
+
+    // Profil d'un enfant dans un compte famille.
+    function isValidProfile(data, profileId) {
+      return data.keys().hasAll(['id', 'userId', 'name', 'avatar', 'legacy', 'createdAt']) &&
+      data.keys().size() == 6 &&
+      data.id == profileId &&
+      data.userId == request.auth.uid &&
+      isValidProfileName(data.name) &&
+      isValidAvatar(data.avatar) &&
+      data.legacy is bool &&
+      data.createdAt == request.time;
+    }
+
+    function isValidHighScore(data) {
+      return data.keys().hasAll([
+        'id', 'userId', 'userDisplayName', 'date', 'tables', 
+        'gameMode', 'questionCount', 'correctCount', 
+        'scorePercentage', 'averageTime', 'createdAt'
+      ]) &&
+      hasFieldCount(data, 11) &&
+      data.id is string && data.id.size() <= 128 &&
+      data.userId is string && data.userId.size() <= 128 &&
+      data.userId == request.auth.uid &&
+      data.userDisplayName is string && data.userDisplayName.size() <= 200 &&
+      data.date is string && data.date.size() <= 50 &&
+      data.tables is list && data.tables.size() >= 1 && data.tables.size() <= 10 &&
+      data.gameMode is string && (data.gameMode == 'FREE' || data.gameMode == 'TIMED' || data.gameMode == 'CHALLENGE') &&
+      data.questionCount is int && data.questionCount >= 1 && data.questionCount <= 100 &&
+      data.correctCount is int && data.correctCount >= 0 && data.correctCount <= data.questionCount &&
+      data.scorePercentage is number && data.scorePercentage >= 0.0 && data.scorePercentage <= 100.0 &&
+      data.averageTime is number && data.averageTime >= 0.0 && data.averageTime <= 1000.0 &&
+      data.createdAt == request.time;
+    }
+
+    function isValidOperationResponse(data) {
+      return data.keys().hasAll([
+        'id', 'userId', 'num1', 'num2', 'userAnswer', 
+        'correctAnswer', 'isCorrect', 'timeTaken', 'date', 'createdAt'
+      ]) &&
+      hasFieldCount(data, 10) &&
+      data.id is string && data.id.size() <= 128 &&
+      data.userId is string && data.userId.size() <= 128 &&
+      data.userId == request.auth.uid &&
+      data.num1 is int && data.num1 >= 1 && data.num1 <= 120 &&
+      data.num2 is int && data.num2 >= 1 && data.num2 <= 120 &&
+      (data.userAnswer == null || data.userAnswer is int) &&
+      data.correctAnswer is int && data.correctAnswer >= 1 && data.correctAnswer <= 14400 &&
+      data.isCorrect is bool &&
+      data.timeTaken is number && data.timeTaken >= 0.0 && data.timeTaken <= 1000.0 &&
+      data.date is string && data.date.size() <= 50 &&
+      data.createdAt == request.time;
+    }
+
+    // HighScores collection rules
+    match /highscores/{scoreId} {
+      allow get, list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      allow create: if isSignedIn() && 
+                    isValidId(scoreId) && 
+                    isValidHighScore(request.resource.data);
+                    
+      allow update: if false; // Scores are immutable
+      
+      allow delete: if isSignedIn() && 
+                    isValidId(scoreId) && 
+                    resource.data.userId == request.auth.uid;
+    }
+
+    // Profils des enfants : chaque compte ne voit et ne gère que les siens.
+    // Seuls le prénom et l'avatar peuvent changer.
+    match /profiles/{profileId} {
+      allow get, list: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      allow create: if isSignedIn() &&
+                    isValidId(profileId) &&
+                    isValidProfile(request.resource.data, profileId);
+
+      allow update: if isSignedIn() &&
+                    resource.data.userId == request.auth.uid &&
+                    request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'avatar']) &&
+                    isValidProfileName(request.resource.data.name) &&
+                    isValidAvatar(request.resource.data.avatar);
+
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // OperationResponses collection rules
+    match /operation_responses/{responseId} {
+      allow get, list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      
+      allow create: if isSignedIn() && 
+                    isValidId(responseId) && 
+                    isValidOperationResponse(request.resource.data);
+                    
+      allow update: if false; // Immutable logs
+      
+      allow delete: if isSignedIn() && 
+                    isValidId(responseId) && 
+                    resource.data.userId == request.auth.uid;
+    }
+  }
+}

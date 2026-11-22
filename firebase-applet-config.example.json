@@ -1,0 +1,10 @@
+{
+  "projectId": "votre-projet",
+  "appId": "1:000000000000:web:0000000000000000000000",
+  "apiKey": "votre-cle-web",
+  "authDomain": "votre-projet.firebaseapp.com",
+  "firestoreDatabaseId": "(default)",
+  "storageBucket": "votre-projet.firebasestorage.app",
+  "messagingSenderId": "000000000000",
+  "measurementId": ""
+}

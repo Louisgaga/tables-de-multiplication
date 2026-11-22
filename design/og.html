@@ -1,0 +1,35 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face{font-family:Chillax;src:url("../public/fonts/chillax/chillax-600.woff2") format("woff2");font-weight:600}
+:root{--ink:oklch(20% 0.014 255);--muted:oklch(47% 0.014 255);--paper:oklch(97% 0.012 95);--card:oklch(98.8% 0.007 95);--kraft:oklch(63% 0.085 62);--strip:oklch(89% 0.045 78);--accent:oklch(87% 0.175 96);--mascot:oklch(50% 0.17 250);--mascot-soft:oklch(72% 0.11 250);--coral:oklch(86% 0.09 30);--brand:oklch(70% 0.2 22);--error:oklch(70% 0.2 22);--wash:oklch(96.5% 0.03 152);--sugar:oklch(89% 0.035 236);--gold:oklch(87% 0.175 96);--fringe:oklch(99.2% 0.006 95);
+--grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.25 0 0 0 0 0.22 0 0 0 0 0.12 0 0 0 0.11 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E"); --fibre: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.35' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.3 0 0 0 0 0.27 0 0 0 0 0.15 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");}
+html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+body{background:var(--paper);background-image:var(--grain),var(--fibre);font-family:Chillax,sans-serif;font-weight:600;color:var(--ink);position:relative}
+.col{position:absolute;left:285px;width:630px;top:0;height:630px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+h1{margin:14px 0 0;font-size:80px;line-height:1;letter-spacing:-0.03em;text-align:center}
+p{margin:22px 0 0;font-size:30px;color:var(--muted)}
+.tile{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:28px;background:var(--card);box-shadow:2px 4px 0 0 oklch(20% 0.014 255 / 0.22);font-size:96px;letter-spacing:-0.03em}
+.strip{position:absolute;border-radius:36px;background:var(--strip)}
+svg{filter:drop-shadow(0 4px 6px oklch(20% 0.014 255 / 0.18))}
+</style></head><body>
+<div class="strip" style="left:40px;top:120px;width:220px;height:390px;transform:rotate(-4deg)"></div>
+<div class="tile" style="left:78px;top:140px;width:140px;height:140px;transform:rotate(-8deg)">7</div>
+<div class="tile" style="left:96px;top:300px;width:110px;height:110px;transform:rotate(5deg);font-size:76px;background:transparent;box-shadow:none">×</div>
+<div class="tile" style="left:84px;top:390px;width:140px;height:140px;transform:rotate(4deg)">8</div>
+<div class="strip" style="left:940px;top:120px;width:220px;height:390px;transform:rotate(3deg);background:var(--sugar)"></div>
+<div class="tile" style="left:996px;top:150px;width:110px;height:110px;transform:rotate(6deg);font-size:76px;background:transparent;box-shadow:none">=</div>
+<div class="tile" style="left:960px;top:290px;width:180px;height:150px;transform:rotate(-5deg);background:var(--accent)">56</div>
+<div class="col">
+<svg width="230" height="230" viewBox="0 0 100 100">
+<circle cx="25" cy="20" r="6" fill="var(--mascot-soft)"/><circle cx="75" cy="20" r="6" fill="var(--mascot-soft)"/>
+<line x1="25" y1="20" x2="35" y2="28" stroke="var(--mascot-soft)" stroke-width="4"/><line x1="75" y1="20" x2="65" y2="28" stroke="var(--mascot-soft)" stroke-width="4"/>
+<rect x="12" y="22" width="76" height="66" rx="25" fill="var(--card)" stroke="var(--mascot)" stroke-width="6"/>
+<rect x="18" y="28" width="64" height="54" rx="18" fill="var(--wash)" stroke="var(--mascot-soft)" stroke-width="2"/>
+<path d="M27 42 Q34 36 41 42" fill="none" stroke="var(--ink)" stroke-width="4.5" stroke-linecap="round"/>
+<circle cx="66" cy="42" r="6" fill="var(--ink)"/><circle cx="64" cy="40" r="2" fill="var(--card)"/>
+<path d="M39 55 Q50 68 61 55 Z" fill="var(--brand)" stroke="var(--brand)" stroke-width="3" stroke-linejoin="round"/>
+<circle cx="24" cy="50" r="4" fill="var(--coral)"/><circle cx="76" cy="50" r="4" fill="var(--coral)"/>
+<circle cx="50" cy="74" r="3" fill="var(--error)"/><circle cx="42" cy="74" r="2.5" fill="var(--mascot-soft)"/><circle cx="58" cy="74" r="2.5" fill="var(--accent)"/>
+</svg>
+<h1>Mes tables de<br>Multiplication</h1>
+<p>Réviser ses tables en s’amusant</p>
+</div></body></html>
