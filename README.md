@@ -88,7 +88,7 @@ par une branche et une pull request.
 ## Organisation du code
 
 - `src/App.tsx` : enchaînement des écrans, compte connecté, enfant qui joue, historique en mémoire. Le rapport et les records sont chargés à part.
-- `src/components/` : un fichier par écran (accueil, compte à rebours, jeu, résultats, records, rapport, « Qui joue ? » dans `ProfilePicker.tsx`), plus les formulaires des profils (`ProfileForm.tsx`), le pavé numérique (`Numpad.tsx`), les chronomètres (`GameClock.tsx`), les graphiques (`charts/`) et le papier découpé du thème (`paper.tsx` : feuilles déchirées, médailles, pastilles de profil).
+- `src/components/` : un fichier par écran (accueil, compte à rebours, jeu, résultats, records, rapport, « Qui joue ? » dans `ProfilePicker.tsx`, « À propos » dans `About.tsx`), plus les formulaires des profils (`ProfileForm.tsx`), le pavé numérique (`Numpad.tsx`), les chronomètres (`GameClock.tsx`), les graphiques (`charts/`) et le papier découpé du thème (`paper.tsx` : feuilles déchirées, médailles, pastilles de profil).
 - `src/utils/history.ts` : lecture et écriture de l'historique, en ligne et dans le navigateur.
 - `src/utils/profiles.ts` : profils des enfants (création, modification, suppression) et répartition de l'historique par enfant. Avec `history.ts`, les seuls fichiers qui parlent à la base de données.
 - `src/utils/stats.ts` : tirage des questions, calculs à trous, maîtrise, médailles, session rapide. Fonctions pures, testées.
